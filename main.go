@@ -7,7 +7,7 @@ func main() {
 
 	const conferenceTickets int = 50
 	var remainingTickets uint = 50
-
+	var bookings [50]string
 
 	fmt.Println("There are", conferenceTickets, "conference tickets available.")
 	fmt.Println("There are", remainingTickets, "conference tickets remaining.")
@@ -31,6 +31,7 @@ func main() {
 	fmt.Scan(&userTickets)
 
 	remainingTickets -= userTickets
+	bookings[0] = firstName + " " + lastName
 
 	fmt.Printf("thank you %v %v for booking %v tickets. You will receive a confirmation email at %v\n", lastName, firstName, userTickets, email)
 
