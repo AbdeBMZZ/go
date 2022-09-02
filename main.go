@@ -1,38 +1,32 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"time"
 )
- 
+
 func main() {
-   links := []string{"https://www.google.com", "https://www.facebook.com", "https://www.golang.org"}
+   timeoutContext, cancel := context.WithTimeout(context.Background(), time.Millisecond *50)
+   defer cancel()
 
-   c := make(chan string)
+	req, err := http.NewRequestWithContext(timeoutContext, http.MethodGet, "http://placeholder.it/2000x2000", nil)
 
-   for _, link := range links {
-      go checkLink(link, c)
-   }
+	if err != nil {
+		panic(err)
+	}
 
-   for l := range c {
-      go func(link string){
-         time.Sleep(5 * time.Second)
-         checkLink(link, c)
-      }(l)
-
-   }
-}
-
-
-func checkLink(link string, c chan string) {
-   _, err := http.Get(link)
+   res, err := http.DefaultClient.Do(req)
    if err != nil {
-      fmt.Println(link, "might be down!")
-      c <- link 
-      return
+      panic(err)
    }
-   fmt.Println(link, "is up!")
-   c <- link
+
+   defer res.Body.Close()
+
+   imageData, err := ioutil.ReadAll(res.Body)
+
+   fmt.Printf("downloaded %d bytes\n", len(imageData))
+
 }
- 
